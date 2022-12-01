@@ -70,7 +70,7 @@ int main(int ac, char *av[]) {
             const char delim = ' ';
             std::vector<std::string> out;
             tokenize(article[art], delim, out);
-            #pragma omp parallel for collapse(4)
+            #pragma omp target teams distribute parallel for collapse(5)
             {
             for(int i = 0; i < out.size(); i++) {
                 //Good word count
