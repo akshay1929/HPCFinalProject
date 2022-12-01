@@ -9,6 +9,7 @@
 #include <sstream>
 #include <chrono>
 #include <ctime>
+#include <omp.h>
 using namespace std;
 
 vector<string> getData(string name) {
@@ -49,7 +50,7 @@ int main(int ac, char *av[]) {
     vector<string> goodWords = getData("good");
     vector<string> badWords = getData("bad");
     vector<string> covidWords = getData("covid");
-    vector<string> racismWords = getData("terrorist");
+    vector<string> terrorismWords = getData("terrorist");
     vector<string> article = getData("article" + to_string(length));
     
     int size = article.size() / blockNum;
@@ -58,6 +59,8 @@ int main(int ac, char *av[]) {
     int block = 1;
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
+    #pragma omp parallel for 
+    {
     for (int i = 0; i < article.size(); i += size) {
         int good = 0;
         int bad = 0;
@@ -67,6 +70,8 @@ int main(int ac, char *av[]) {
             const char delim = ' ';
             std::vector<std::string> out;
             tokenize(article[art], delim, out);
+            #pragma omp parallel for collapse(4)
+            {
             for(int i = 0; i < out.size(); i++) {
                 //Good word count
                 for (int iter = 0; iter < goodWords.size(); iter++) {
@@ -87,14 +92,16 @@ int main(int ac, char *av[]) {
                     } 
                 }
                 //Racism word count
-                for (int iter = 0; iter < racismWords.size(); iter++) {
-                    if (out[i] == racismWords[iter]) {
+                for (int iter = 0; iter < terrorismWords.size(); iter++) {
+                    if (out[i] == terrorismWords[iter]) {
                         racism++;
                     } 
                 }
             }
+            }
         }
         block++;
+    }
     }
     end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end - start;
