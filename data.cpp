@@ -48,8 +48,7 @@ int main(int ac, char *av[]) {
     
     vector<string> goodWords = getData("good");
     vector<string> badWords = getData("bad");
-    vector<string> covidWords = getData("covid");
-    vector<string> racismWords = getData("terrorist");
+    vector<string> racismWords = getData("racism");
     vector<string> article = getData("article" + to_string(length));
     
     int size = article.size() / blockNum;
@@ -78,12 +77,6 @@ int main(int ac, char *av[]) {
                 for (int iter = 0; iter < badWords.size(); iter++) {
                     if (out[i] == badWords[iter]) {
                         bad++;
-                    } 
-                }
-                //Covid word count
-                for (int iter = 0; iter < covidWords.size(); iter++) {
-                    if (out[i] == covidWords[iter]) {
-                        covid++;
                     } 
                 }
                 //Racism word count
