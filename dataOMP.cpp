@@ -68,8 +68,8 @@ int main(int ac, char *av[]) {
             const char delim = ' ';
             std::vector<std::string> out;
             tokenize(article[art], delim, out);
+            #pragma omp parallel for
             for(int i = 0; i < out.size(); i++) {
-                #pragma omp parallel for collapse(2)
                 //Good word count
                 for (int iter = 0; iter < goodWords.size(); iter++) {
                     if (out[i] == goodWords[iter]) {
