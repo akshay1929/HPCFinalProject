@@ -70,7 +70,6 @@ int main(int ac, char *av[]) {
             tokenize(article[art], delim, out);
             for(int i = 0; i < out.size(); i++) {
                 #pragma omp parallel for 
-                {
                 //Good word count
                 for (int iter = 0; iter < goodWords.size(); iter++) {
                     if (out[i] == goodWords[iter]) {
@@ -94,7 +93,6 @@ int main(int ac, char *av[]) {
                     if (out[i] == terrorismWords[iter]) {
                         racism++;
                     } 
-                }
                 }
             }
         }
