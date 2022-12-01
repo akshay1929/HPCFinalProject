@@ -64,6 +64,7 @@ int main(int ac, char *av[]) {
         int bad = 0;
         int covid = 0;
         int racism = 0;
+        #pragma omp parallel for
         for (int art = i; art < i + size; art++) {
             const char delim = ' ';
             std::vector<std::string> out;
