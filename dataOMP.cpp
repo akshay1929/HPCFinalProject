@@ -59,8 +59,6 @@ int main(int ac, char *av[]) {
     int block = 1;
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    #pragma omp parallel for 
-    {
     for (int i = 0; i < article.size(); i += size) {
         int good = 0;
         int bad = 0;
@@ -70,9 +68,9 @@ int main(int ac, char *av[]) {
             const char delim = ' ';
             std::vector<std::string> out;
             tokenize(article[art], delim, out);
-            #pragma omp target teams distribute parallel for collapse(5)
-            {
             for(int i = 0; i < out.size(); i++) {
+                #pragma omp parallel for collapse(5)
+                {
                 //Good word count
                 for (int iter = 0; iter < goodWords.size(); iter++) {
                     if (out[i] == goodWords[iter]) {
@@ -97,11 +95,10 @@ int main(int ac, char *av[]) {
                         racism++;
                     } 
                 }
-            }
+                }
             }
         }
         block++;
-    }
     }
     end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end - start;
