@@ -39,11 +39,8 @@ void tokenize(std::string const &str, const char delim, std::vector<std::string>
 int main(int ac, char *av[]) {
 
     int length = 0;
-    int blockNum = 1;
     if (ac > 1) { // if user entered a value after the prog name, parse it
-
         length = std::atoi(av[1]);    
-        blockNum = std::atoi(av[2]);
     }
     
     vector<string> goodWords = getData("good");
@@ -51,40 +48,62 @@ int main(int ac, char *av[]) {
     vector<string> racismWords = getData("racism");
     vector<string> article = getData("article" + to_string(length));
     
-    int size = article.size() / blockNum;
+
     cout << article.size() << '\n';
-    cout << size << '\n';
+ 
     int block = 1;
     std::chrono::time_point<std::chrono::system_clock> start, end;
+    
+    int good = 0;
+    int bad = 0;
+    int covid = 0;
+    int racism = 0;
     start = std::chrono::system_clock::now();
-    for (int i = 0; i < article.size(); i += size) {
-        int good = 0;
-        int bad = 0;
-        int covid = 0;
-        int racism = 0;
-        for (int art = i; art < i + size; art++) {
-            const char delim = ' ';
-            std::vector<std::string> out;
-            tokenize(article[art], delim, out);
-            for(int i = 0; i < out.size(); i++) {
-                //Good word count
-                for (int iter = 0; iter < goodWords.size(); iter++) {
-                    if (out[i] == goodWords[iter]) {
-                        good++;
-                    } 
+    for (int i = 0; i < article.size(); i++) {
+        const char delim = ' ';
+        std::vector<std::string> out;
+        tokenize(article[i], delim, out);
+        for(int j = 0; j < out.size(); j++) {
+            //Good word count
+            int upper = goodWords.size() - 1;
+            for (int lower = 0; lower <= upper;) {
+                int mid = lower + (upper - lower) / 2;
+                if (out[j] == (goodWords[mid])) {
+                    good++;
+                    break;
                 }
-                //Bad word count
-                for (int iter = 0; iter < badWords.size(); iter++) {
-                    if (out[i] == badWords[iter]) {
-                        bad++;
-                    } 
+                if (out[j] > (goodWords[mid]))
+                    lower = mid + 1;
+                else
+                    upper = mid - 1;
+            }
+            
+            //Bad word count
+            upper = badWords.size() - 1;
+            for (int lower = 0; lower <= upper;) {
+                int mid = lower + (upper - lower) / 2;
+                if (out[j] == (badWords[mid])) {
+                    bad++;
+                    break;
                 }
-                //Racism word count
-                for (int iter = 0; iter < racismWords.size(); iter++) {
-                    if (out[i] == racismWords[iter]) {
-                        racism++;
-                    } 
+                if (out[j] > (badWords[mid]))
+                    lower = mid + 1;
+                else
+                    upper = mid - 1;
+            }
+            
+            //Racism word count
+            upper = racismWords.size() - 1;
+            for (int lower = 0; lower <= upper;) {
+                int mid = lower + (upper - lower) / 2;
+                if (out[j] == (racismWords[mid])) {
+                    racism++;
+                    break;
                 }
+                if (out[j] > (racismWords[mid]))
+                    lower = mid + 1;
+                else
+                    upper = mid - 1;
             }
         }
         block++;
