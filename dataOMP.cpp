@@ -65,10 +65,11 @@ int main(int ac, char *av[]) {
             const char delim = ' ';
             std::vector<std::string> out;
             tokenize(article[i], delim, out);
-            #pragma omp for
+            //#pragma omp for
             for(int j = 0; j < out.size(); j++) {
                 //Good word count
                 int upper = goodWords.size() - 1;
+                #pragma omp for
                 for (int lower = 0; lower <= upper;) {
                     int mid = lower + (upper - lower) / 2;
                     if (out[j] == (goodWords[mid])) {
