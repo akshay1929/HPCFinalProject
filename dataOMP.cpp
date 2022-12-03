@@ -58,58 +58,59 @@ int main(int ac, char *av[]) {
     int racism = 0;
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    #pragma omp parallel for collapse(2) 
+    #pragma omp parallel
     {
-    for (int i = 0; i < article.size(); i++) {
-        const char delim = ' ';
-        std::vector<std::string> out;
-        tokenize(article[i], delim, out);
-        #pragma omp parallel for
-        for(int j = 0; j < out.size(); j++) {
-            //Good word count
-            int upper = goodWords.size() - 1;
-            for (int lower = 0; lower <= upper;) {
-                int mid = lower + (upper - lower) / 2;
-                if (out[j] == (goodWords[mid])) {
-                    good++;
-                    break;
+        #pragma omp for
+        for (int i = 0; i < article.size(); i++) {
+            const char delim = ' ';
+            std::vector<std::string> out;
+            tokenize(article[i], delim, out);
+            //#pragma omp for
+            for(int j = 0; j < out.size(); j++) {
+                //Good word count
+                int upper = goodWords.size() - 1;
+                for (int lower = 0; lower <= upper;) {
+                    int mid = lower + (upper - lower) / 2;
+                    if (out[j] == (goodWords[mid])) {
+                        good++;
+                        break;
+                    }
+                    if (out[j] > (goodWords[mid]))
+                        lower = mid + 1;
+                    else
+                        upper = mid - 1;
                 }
-                if (out[j] > (goodWords[mid]))
-                    lower = mid + 1;
-                else
-                    upper = mid - 1;
-            }
-            
-            //Bad word count
-            upper = badWords.size() - 1;
-            for (int lower = 0; lower <= upper;) {
-                int mid = lower + (upper - lower) / 2;
-                if (out[j] == (badWords[mid])) {
-                    bad++;
-                    break;
+                
+                //Bad word count
+                upper = badWords.size() - 1;
+                for (int lower = 0; lower <= upper;) {
+                    int mid = lower + (upper - lower) / 2;
+                    if (out[j] == (badWords[mid])) {
+                        bad++;
+                        break;
+                    }
+                    if (out[j] > (badWords[mid]))
+                        lower = mid + 1;
+                    else
+                        upper = mid - 1;
                 }
-                if (out[j] > (badWords[mid]))
-                    lower = mid + 1;
-                else
-                    upper = mid - 1;
-            }
-            
-            //Racism word count
-            upper = racismWords.size() - 1;
-            for (int lower = 0; lower <= upper;) {
-                int mid = lower + (upper - lower) / 2;
-                if (out[j] == (racismWords[mid])) {
-                    racism++;
-                    break;
+                
+                //Racism word count
+                upper = racismWords.size() - 1;
+                for (int lower = 0; lower <= upper;) {
+                    int mid = lower + (upper - lower) / 2;
+                    if (out[j] == (racismWords[mid])) {
+                        racism++;
+                        break;
+                    }
+                    if (out[j] > (racismWords[mid]))
+                        lower = mid + 1;
+                    else
+                        upper = mid - 1;
                 }
-                if (out[j] > (racismWords[mid]))
-                    lower = mid + 1;
-                else
-                    upper = mid - 1;
             }
+            block++;
         }
-        block++;
-    }
     }
     
     // for (int i = 0; i < article.size(); i += size) {
