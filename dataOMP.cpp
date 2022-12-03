@@ -52,6 +52,10 @@ int main(int ac, char *av[]) {
 
     cout << article.size() << '\n';
     int block = 1;
+    int good = 0;
+    int bad = 0;
+    int covid = 0;
+    int racism = 0;
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
     #pragma omp parallel for
