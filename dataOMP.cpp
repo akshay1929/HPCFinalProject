@@ -58,7 +58,7 @@ int main(int ac, char *av[]) {
     int racism = 0;
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    #pragma omp parallel for collapse(2)
+    #pragma omp parallel for collapse(2) {
     for (int i = 0; i < article.size(); i++) {
         const char delim = ' ';
         std::vector<std::string> out;
@@ -108,6 +108,7 @@ int main(int ac, char *av[]) {
             }
         }
         block++;
+    }
     }
     
     // for (int i = 0; i < article.size(); i += size) {
